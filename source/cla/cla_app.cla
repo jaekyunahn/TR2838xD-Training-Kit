@@ -1,0 +1,55 @@
+/*
+ * cla.cla
+ *
+ *  Created on: 2023. 11. 10.
+ *      Author: ajg10
+ */
+#include <math.h>
+#include "_define.h"
+#include "cla_app.h"
+
+__interrupt void Cla1Task1(void) {
+    __mdebugstop();
+    cla_to_cpu.flag = 0;
+    cla_to_cpu.output = 0.0;
+    for(cla_to_cpu.flag = 0 ; cla_to_cpu.flag < cpu_to_cla.input_count ; cla_to_cpu.flag = cla_to_cpu.flag + 1) {
+        cla_to_cpu.output = cla_to_cpu.output + (cpu_to_cla.input[cla_to_cpu.flag] * cpu_to_cla.weight[cla_to_cpu.flag]);
+    }
+}
+
+__interrupt void Cla1Task2(void)
+{
+
+}
+
+__interrupt void Cla1Task3(void)
+{
+
+}
+
+__interrupt void Cla1Task4(void)
+{
+
+}
+
+__interrupt void Cla1Task5(void)
+{
+
+}
+
+__interrupt void Cla1Task6(void)
+{
+
+}
+
+__interrupt void Cla1Task7(void)
+{
+
+}
+
+__interrupt void Cla1Task8(void)
+{
+
+}
+
+
