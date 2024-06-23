@@ -84,6 +84,7 @@ void bsp_sci_gpio(void) {
  *
  * @param data The data to be transmitted.
  */
+#pragma CODE_SECTION(scia_write, ".TI.ramfunc");
 void scia_write(Uint16 data) {
     while (SciaRegs.SCICTL2.bit.TXEMPTY == 0);
     SciaRegs.SCITXBUF.all = data;
@@ -102,3 +103,12 @@ Uint16 scia_read(void) {
     res = SciaRegs.SCIRXBUF.all;
     return res;
 }
+
+Uint16 scia_read_nowait(void) {
+    Uint16 res = 0;
+    if(SciaRegs.SCIRXST.bit.RXRDY == 1) {
+        res = SciaRegs.SCIRXBUF.all;
+    }
+    return res;
+}
+

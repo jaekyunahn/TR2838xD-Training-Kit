@@ -8,15 +8,18 @@
 
 void init_application(void) {
 #ifdef CPU1
+    //  Flash Programing function initialize
+    init_program_flash();
     //  LED Driver initialize
     init_app_LED_Driver();
-    //  Initialize various global array buffers
-    init_bin_buffer();
-    init_cmd_buffer();
+    //  Initialize fileSystem array buffers
     init_fileSystem_buffer();
 
-    UARTprintf("\033c");
-    DELAY_US(100000);
+    #ifdef APP
+    //  Initialize global array buffers
+    init_bin_buffer();
+    init_cmd_buffer();
+
     UARTprintf("\n");
     UARTprintf("------------HW info------------\n");
     UARTprintf("DEVICE:          \033[33m %s\033[0m\n",DEVICE);
@@ -32,6 +35,12 @@ void init_application(void) {
     UARTprintf("OS Version:         \033[36m %s\033[0m\n",KERNEL_VERSION);
     UARTprintf("FileSystem Version: \033[36m %s\033[0m\n",FILESYSTEM_VERSION);
     scia_write('\n');
+    #else
+    UARTprintf("\033c");
+    DELAY_US(100000);
+    UARTprintf("Start Bootloader\n");
+    #endif
+
 #endif
 
     //  CPU <> CLA data initialize

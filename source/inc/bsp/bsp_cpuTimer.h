@@ -11,5 +11,7 @@
 void init_cpuTimer(void);
 void configCPUTimer(uint32_t cpuTimer, uint32_t timer_period);
 __interrupt void timer1_ISR( void );
+__interrupt void timer0_ISR(void);
+void init_cpuTimer0(void);
 
 #endif /* USER_INC_BSP_BSP_CPUTIMER_H_ */

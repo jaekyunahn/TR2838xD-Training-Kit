@@ -120,7 +120,7 @@ FRESULT ChangeToDirectory(char *pcDirectory, char *now_dir, unsigned long *pulRe
  *
  * @return int16 Number of bytes read, or -1 if an error occurred.
  */
-int16 read_file(Uint16 *address, Uint16 *buffer, Uint16 read_size, Uint16 index) {
+int16 read_file(Uint16 *address, Uint16 *buffer, Uint16 read_size, Uint32 index) {
     int16 res = 0;
     UINT br;
     FSIZE_t file_size;
@@ -135,7 +135,7 @@ int16 read_file(Uint16 *address, Uint16 *buffer, Uint16 read_size, Uint16 index)
     if(fresult == FR_OK) {
         // Check the file size
         file_size = f_size(&fil);
-
+        //UARTprintf("file_size= %lBytes\n",(Uint32)file_size);
         // If the file size is smaller than the specified read size
         if((Uint16)file_size < read_size) {
             readSize = (Uint16)file_size;
@@ -153,7 +153,7 @@ int16 read_file(Uint16 *address, Uint16 *buffer, Uint16 read_size, Uint16 index)
     }
 
     if(fresult == FR_OK) {
-        res = readSize;
+        res = br;
     } else {
         res = -1;
     }

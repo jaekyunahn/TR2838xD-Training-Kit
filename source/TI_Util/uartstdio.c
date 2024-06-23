@@ -409,6 +409,7 @@ UARTStdioConfig(uint32_t ui32PortNum, uint32_t ui32Baud, uint32_t ui32SrcClock)
 //! \return Returns the count of characters written.
 //
 //*****************************************************************************
+//#pragma CODE_SECTION(UARTwrite, ".TI.ramfunc");
 int
 UARTwrite(const char *pcBuf, uint32_t ui32Len)
 {
@@ -838,6 +839,7 @@ UARTgetc(void)
 //! \return None.
 //
 //*****************************************************************************
+//#pragma CODE_SECTION(UARTvprintf, ".TI.ramfunc");
 void
 UARTvprintf(const char *pcString, va_list vaArgP)
 {
@@ -1321,6 +1323,7 @@ convert:
 //! \return None.
 //
 //*****************************************************************************
+//#pragma CODE_SECTION(UARTprintf, ".TI.ramfunc");
 void
 UARTprintf(const char *pcString, ...)
 {

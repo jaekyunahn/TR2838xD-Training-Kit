@@ -10,5 +10,6 @@
 
 void main_loop(void);
 void control_loop(void);
+Uint16 topProcess(void);
 
 #endif /* USER_INC__SEQUENCE_H_ */

@@ -16,6 +16,7 @@
  * @param address The GPIO pin address (0-7).
  * @param data The state to set the pin (0 for clear, 1 for set).
  */
+//#pragma CODE_SECTION(app_LED_Driver, ".TI.ramfunc");
 void app_LED_Driver(Uint16 address, Uint16 data) {
     switch(address) {
     case 0: if(data == 0) GpioDataRegs.GPBCLEAR.bit.GPIO32 = 1; else GpioDataRegs.GPBSET.bit.GPIO32 = 1; break;

@@ -5,7 +5,7 @@
  *      Author: User
  */
 #include "main.h"
-
+#ifdef APP
 //  임시로 저장할 변수길이
 #define MAX_TEMP_LAYER_COUNT    1024
 //  SD-Card에서 한번에 읽을 데이터 버퍼 크기
@@ -197,12 +197,14 @@ void dence_layer( Uint16 layer_case, Uint16 layer_index, Uint16 input_layer_coun
     //Uint16 temp[4];
     Uint16 x = 0, y = 0;
 
+#if 0
     memset(read_file_address, 0x00, sizeof(read_file_address));
     if(layer_case == HEDDEN_LAYER_TYPE)
         sprintf(read_file_address,"/home/data/h%d_b",layer_index);  //layer_case + layer_index
     if(layer_case == OUTPUT_LAYER_TYPE)
         sprintf(read_file_address,"/home/data/out_b");  //layer_case
     res = read_file(read_file_address, read_data_sdcard_buffer, sizeof(read_data_sdcard_buffer), 0);
+#endif
 
     //  현재 레이어의 bias를 읽어 오는 부분
     convertBuffer_charTofloat(read_data_sdcard_buffer, temp_bias, output_layer_count);
@@ -216,6 +218,7 @@ void dence_layer( Uint16 layer_case, Uint16 layer_index, Uint16 input_layer_coun
         temp_out_layer[x] = temp_bias[x];
 
         //  가중치 읽어오기
+#if 0
         memset(read_file_address, 0x00, sizeof(read_file_address));
         if(layer_case == HEDDEN_LAYER_TYPE){
             sprintf(read_file_address,"/home/data/h%d_w%d",layer_index,x);
@@ -224,6 +227,7 @@ void dence_layer( Uint16 layer_case, Uint16 layer_index, Uint16 input_layer_coun
             sprintf(read_file_address,"/home/data/out_w%d",x);
         }
         res = read_file(read_file_address, read_data_sdcard_buffer, sizeof(read_data_sdcard_buffer), 0);
+#endif
         //
         convertBuffer_charTofloat(read_data_sdcard_buffer, temp_weight, input_layer_count);
 #if 1
@@ -293,11 +297,6 @@ void dence_layer( Uint16 layer_case, Uint16 layer_index, Uint16 input_layer_coun
     }
 }
 
-void ai_tick_timer(void) {
-    if (timer_flag == 1)
-        timer_count++;
-}
-
 void CLA_start(void) {
     //  CPU1.CLA start
     asm("  IACK  #0x0001");
@@ -336,7 +335,11 @@ void CPU2_end(void) {
     }
 }
 
+#pragma CODE_SECTION(ai_tick_timer, ".TI.ramfunc");
+void ai_tick_timer(void) {
+    if (timer_flag == 1)
+        timer_count++;
+}
 
-
-
+#endif
 

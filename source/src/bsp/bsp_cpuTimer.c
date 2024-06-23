@@ -26,6 +26,20 @@ void init_cpuTimer(void) {
     CPUTimer_startTimer(CPUTIMER1_BASE);
 }
 
+void init_cpuTimer0(void) {
+#ifdef BOOTLOADER
+    Interrupt_register(INT_TIMER2, &timer0_ISR);
+    CPUTimer_setPeriod(CPUTIMER2_BASE, 0xFFFFFFFF);
+    CPUTimer_setPreScaler(CPUTIMER2_BASE, 0);
+    CPUTimer_stopTimer(CPUTIMER2_BASE);
+    CPUTimer_reloadTimerCounter(CPUTIMER2_BASE);
+    configCPUTimer(CPUTIMER2_BASE, 1000); // 1ms
+    CPUTimer_enableInterrupt(CPUTIMER2_BASE);
+    Interrupt_enable(INT_TIMER2);
+    CPUTimer_startTimer(CPUTIMER2_BASE);
+#endif
+}
+
 /**
  * @brief Configure the CPU Timer
  *
@@ -50,7 +64,20 @@ void configCPUTimer(uint32_t cpuTimer, uint32_t timer_period) {
  *
  * This interrupt service routine is called when Timer1 overflows.
  */
+#pragma CODE_SECTION(timer1_ISR, ".TI.ramfunc");
 __interrupt void timer1_ISR(void) {
+    Uint16 topPrun = 0;
+#ifdef APP
     ai_tick_timer();
-    rtos_timer_isr_function();
+#endif
+    topPrun = topProcess();
+    if (topPrun == 0){
+        rtos_timer_isr_function();
+    }
+}
+
+__interrupt void timer0_ISR(void) {
+#ifdef BOOTLOADER
+    UpdateTimerCount();
+#endif
 }

@@ -20,6 +20,11 @@ void main_loop(void) {
 #endif
 }
 
+#pragma CODE_SECTION(topProcess, ".TI.ramfunc");
+Uint16 topProcess(void) {
+
+}
+
 //
 //  End file
 //

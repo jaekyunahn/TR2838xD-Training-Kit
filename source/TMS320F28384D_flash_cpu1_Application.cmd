@@ -23,9 +23,16 @@ MEMORY
 #endif
    	/* BEGIN is used for the "boot to Flash" bootloader mode   */
    	BEGIN				: origin = 0x080000, length = 0x000002
+   	BEGIN_APP			: origin = 0x090000, length = 0x000002
+
    	/* Flash sectors */
-   	FLASH				: origin = 0x080002, length = 0x037FFE  /* on-chip Flash */
-	FLASH_CLA          	: origin = 0x0B8000, length = 0x006000  /* on-chip Flash */
+   	//	0~4
+   	FLASH_BOOT			: origin = 0x080002, length = 0x00FFFE  /* on-chip Flash */
+   	//	5~8
+   	FLASH_APP			: origin = 0x090002, length = 0x01FFFE  /* on-chip Flash */
+	//	9~12
+	FLASH_CLA          	: origin = 0x0B0000, length = 0x00E000  /* on-chip Flash */
+
 	FLASH13				: origin = 0x0BE000, length = 0x001FF0  /* FLASH13 Not USE */
    	FLASH13_DO_NOT_USE	: origin = 0x0BFFF0, length = 0x000010	/* Reserve and do not use for code as per the errata advisory "Memory: Prefetching Beyond Valid Memory" */
    
@@ -35,8 +42,8 @@ MEMORY
 	#endif
 #endif
 
-	CPU1TOCPU2	: origin = 0x03A000, length = 0x000800
-	CPU2TOCPU1	: origin = 0x03B000, length = 0x000800
+	CPU1TOCPU2		: origin = 0x03A000, length = 0x000800
+	CPU2TOCPU1		: origin = 0x03B000, length = 0x000800
 
 	CPUTOCMRAM		: origin = 0x039000, length = 0x000800
 	CMTOCPURAM		: origin = 0x038000, length = 0x000800
@@ -48,42 +55,44 @@ MEMORY
 
 SECTIONS
 {
-	codestart		: > BEGIN, ALIGN(8)
-	.text			: > FLASH, ALIGN(8)
-	.cinit			: > FLASH, ALIGN(8)
-	.switch			: > FLASH, ALIGN(8)
+	codestart		: > BEGIN_APP, ALIGN(8)
+	.text			: > FLASH_APP, ALIGN(8)
+	.cinit			: > FLASH_APP, ALIGN(8)
+	.switch			: > FLASH_APP, ALIGN(8)
 	.reset			: > RESET, TYPE = DSECT /* not used, */
 	.stack			: > RAMM
 
 #if defined(__TI_EABI__)
-	.init_array		: > FLASH, ALIGN(8)
+	.init_array		: > FLASH_APP, ALIGN(8)
 	.bss			: > RAMLS0
 	.bss:output		: > RAMLS0
 	.bss:cio		: > RAMLS0
 	.data			: > RAMLS0//RAMLS0
 	.sysmem			: > RAMLS0//RAMLS0
 	/* Initalized sections go in Flash */
-	.const			: > FLASH, ALIGN(8)
+	.const			: > FLASH_APP, ALIGN(8)
 #else
-	.pinit			: > FLASH, ALIGN(8)
+	.pinit			: > FLASH_APP, ALIGN(8)
 	.ebss			: > RAMLS0
 	.esysmem		: > RAMLS0
 	.cio			: > RAMLS0
 	/* Initalized sections go in Flash */
-	.econst			: > FLASH, ALIGN(8)
+	.econst			: > BEGIN_APP, ALIGN(8)
 #endif
 
-	ramgs0 : > RAMGS0, type=NOINIT
-	ramgs1 : > RAMGS0, type=NOINIT
+	//ramgs0 : > RAMGS0, type=NOINIT
+	//ramgs1 : > RAMGS0, type=NOINIT
+	ramgs0 : > RAMGS0
+	ramgs1 : > RAMGS0
 
 	//	병렬 처리시 공유 메모리
-	shareMem : > RAMGS_SHARE, type=NOINIT
+	shareMem : > RAMGS_SHARE
    
-	MSGRAM_CPU1TOCPU2 > CPU1TOCPU2, type=NOINIT
-	MSGRAM_CPU2TOCPU1 > CPU2TOCPU1, type=NOINIT
+	MSGRAM_CPU1TOCPU2 > CPU1TOCPU2
+	MSGRAM_CPU2TOCPU1 > CPU2TOCPU1
 
-	MSGRAM_CPU_TO_CM   > CPUTOCMRAM, type=NOINIT
-	MSGRAM_CM_TO_CPU   > CMTOCPURAM, type=NOINIT
+	MSGRAM_CPU_TO_CM   > CPUTOCMRAM
+	MSGRAM_CM_TO_CPU   > CMTOCPURAM
 
    	/* The following section definition are for SDFM examples */
 	Filter_RegsFile  	: > RAMGS0
@@ -145,7 +154,7 @@ SECTIONS
 #endif
 
 #if defined(__TI_EABI__)
-		.TI.ramfunc : {} 	LOAD = FLASH,
+		.TI.ramfunc : {} 	LOAD = FLASH_APP,
 							RUN = RAMGS0,
 							LOAD_START(RamfuncsLoadStart),
 							LOAD_SIZE(RamfuncsLoadSize),
@@ -155,7 +164,7 @@ SECTIONS
 							RUN_END(RamfuncsRunEnd),
 							ALIGN(8)
 #else
-		.TI.ramfunc : {}	LOAD = FLASH,
+		.TI.ramfunc : {}	LOAD = FLASH_APP,
 							RUN = RAMGS0,
 							LOAD_START(_RamfuncsLoadStart),
 							LOAD_SIZE(_RamfuncsLoadSize),

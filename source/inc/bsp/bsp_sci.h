@@ -14,5 +14,6 @@ void bsp_sci_gpio(void);
 
 Uint16 scia_read(void);
 void scia_write(Uint16 data);
+Uint16 scia_read_nowait(void);
 
 #endif /* INC_BSP_BSP_SCI_H_ */

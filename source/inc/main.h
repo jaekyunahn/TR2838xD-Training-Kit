@@ -19,6 +19,7 @@
 //  TI Header File
 #include "f28x_project.h"
 #include "device.h"
+#include "F021_F2838x_C28x.h"
 
 //  FreeRTOS
 #include "cmd.h"
@@ -60,11 +61,13 @@
 #include "bsp_rtos.h"
 #include "bsp_cpuTimer.h"
 #include "bsp_filesystem.h"
+#include "bsp_flash.h"
 
 #include "app_ai.h"
 #include "app_function.h"
 #include "app_LED_Driver.h"
 #include "app_cpu2_thread.h"
 #include "app_multicoreTest.h"
+#include "app_FirmwareUpdate.h"
 
 #endif /* USER_INC_MAIN_H_ */
