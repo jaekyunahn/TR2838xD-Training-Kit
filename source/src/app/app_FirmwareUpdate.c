@@ -7,11 +7,6 @@
 #include "main.h"
 #ifdef APP
 #else
-#define APPLICATION_ADDRESS 0x090000
-#define FLASH_SIZE  0x2E000
-#define TEMP_READ_MEMORY_SIZE   256
-#define TEMP_WRITE_MEMORY_SIZE   128
-#define APPLICATION_START_SECTOR    5
 
 Uint16 fwUpdateFlag = 0;
 Uint16 selectTimerCount = 0;
@@ -23,12 +18,23 @@ Uint16 read_file_address[32];
 //  Combination Buffer
 Uint16 CombinationBuffer[TEMP_WRITE_MEMORY_SIZE];
 
+//  Select Update Mode
+Uint16 fwUpdateMode = 0;
+
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 //
 
 void UpdateTimerCount(void) {
     selectTimerCount++;
+}
+
+void setUpdateTimerCount(Uint16 data) {
+    selectTimerCount = data;
+}
+
+Uint16 getUpdateTimerCount(void) {
+    return selectTimerCount;
 }
 
 void setFwUpdateFlag(Uint16 data) {
@@ -85,9 +91,11 @@ uint32_t app_FWupdate(void) {
     Flash_releasePumpSemaphore();
 #else
 
+    //  Variable
+
     //  FW file Size
     int32 fwSize = 0;
-    //  FW file read count
+    //  FW file read count = Total Flash Memory Size /
     Uint32 fwCount = (Uint32)FLASH_SIZE / (Uint32)TEMP_WRITE_MEMORY_SIZE;
     //  FW file read index
     Uint32 fwReadindex = 0;
@@ -102,26 +110,29 @@ uint32_t app_FWupdate(void) {
     //  Select Wait Time (S)
     Uint16 count_Timer = 5;
 
-    //  Variable
     int32 res = 0;
+    //
     Uint16 getChar = 0;
+
     Uint16 error_count = 0;
+
     Uint16 count_Timer_tmp = 0;
+
     Uint16 count_Timer_tmp_old = 0;
+    //  temp Index
     Uint16 tmpIndex = 0;
+    //  temp Memory
     Uint32 i = 0, x = 0;
 
     //
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //
 
-    //  Select Update Mode
-    Uint16 fwUpdateMode = 0;
     UARTprintf("Select boot method\n");
     UARTprintf("    0: Nomal Boot (MCU Flash) -> Default\n");
     UARTprintf("    1: SD-Card Update\n");
+    UARTprintf("    2: UART Update (X Modem)\n");
     //  TBD
-    //UARTprintf("    2: UART Update\n");
     //UARTprintf("    3: CAN Update\n");
 
     selectTimerCount = 0;
@@ -162,9 +173,6 @@ uint32_t app_FWupdate(void) {
         }
     }
 
-    //  Select Wait시 App으로 넘어갈때 FreeRTOS가 멈추는 현상 발생. Timer2를 정지하지 않으면 뭔가 APP쪽에서 꼬이는듯
-    CPUTimer_stopTimer(CPUTIMER2_BASE);
-
     //  Select Boot Menu
     switch(fwUpdateMode) {
     case 1:
@@ -175,7 +183,7 @@ uint32_t app_FWupdate(void) {
         //  check FW file
         fwSize = read_file(read_file_address, FwBuffer, sizeof(FwBuffer), 0);
         if(fwSize != -1) {
-        UARTprintf("fwCount=%l\n",fwCount);
+            UARTprintf("fwCount=%l\n",fwCount);
             //  Erase Flash
             UARTprintf("Start Erase Flash\n");
             for(i = 5 ; i < 14; i++) {
@@ -241,18 +249,28 @@ uint32_t app_FWupdate(void) {
 
             //  Release the pump access
             Flash_releasePumpSemaphore();
-
-            //  delet file > f_unlink
-            //  TBD
-            //f_unlink("app");
         }
         else {
             UARTprintf("Can not Find Update FW file\n");
         }
         break;
+
+    case 2:
+        //
+        UARTprintf("X modem Update Start - Please Start X-modem and Send FW file\n");
+
+        //  X modem Start
+        Xmodem_thread();
+
+        break;
+
     }
 
 #endif
+
+    //  Select Wait시 App으로 넘어갈때 FreeRTOS가 멈추는 현상 발생. Timer2를 정지하지 않으면 뭔가 APP쪽에서 꼬이는듯
+    CPUTimer_stopTimer(CPUTIMER2_BASE);
+
     return jumpToAddress;
 }
 #endif

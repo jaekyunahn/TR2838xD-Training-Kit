@@ -13,5 +13,7 @@ void setFwUpdateFlag(Uint16 data);
 Uint16 getFwUpdateFlag(void);
 void app_FWupdate_start(void);
 void UpdateTimerCount(void);
+Uint16 getUpdateTimerCount(void);
+void setUpdateTimerCount(Uint16 data);
 
 #endif /* INC_APP_APP_FIRMWAREUPDATE_H_ */

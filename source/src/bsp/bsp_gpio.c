@@ -18,5 +18,7 @@ void init_gpio(void) {
     bsp_sci_gpio();
     //  SPI GPIO MUX 설정
     bsp_spi_gpio();
+    //  CAN GPIO MUX 설정
+    bsp_can_gpio();
 }
 

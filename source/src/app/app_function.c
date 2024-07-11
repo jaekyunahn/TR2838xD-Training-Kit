@@ -35,3 +35,27 @@ void convert_c28_to_x86(Uint16 x86[2], Uint16 c28[4]) {
     x86[0] = (c28[0] & 0x00FF) + ((c28[1] & 0x00FF) << 8);
     x86[1] = (c28[2] & 0x00FF) + ((c28[3] & 0x00FF) << 8);
 }
+
+
+Uint16 calcrc(Uint16 *data, Uint32 count){
+    Uint16  crc;
+    Uint16 i;
+    crc = 0;
+    while (--count >= 0) {
+        crc = crc ^ (Uint16) *data++ << 8;
+        i = 8;
+        do {
+            if (crc & 0x8000){
+                crc = crc << 1 ^ 0x1021;
+            }
+            else{
+                crc = crc << 1;
+            }
+        } while(--i);
+    }
+    return crc;
+}
+
+//
+//
+//

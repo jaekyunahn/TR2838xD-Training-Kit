@@ -1991,8 +1991,7 @@ ADC_getTemperatureC(uint16_t tempResult, float32_t vref)
     //
     // Read temp sensor slope and offset locations from OTP and convert
     //
-    return((int16_t)((((float32_t)tempResult * vref / 4096.0F) -
-                      ADC_EXT_REF_TSOFFSET) / ADC_EXT_REF_TSSLOPE));
+    return((int16_t)((((float32_t)tempResult * vref / 4096.0F) - ADC_EXT_REF_TSOFFSET) / ADC_EXT_REF_TSSLOPE));
 }
 
 //*****************************************************************************

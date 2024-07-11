@@ -95,13 +95,13 @@ Uint16 erase_flash(Uint16 sectorNum) {
     return res;
 }
 
+Fapi_StatusType oReturnCheck;
 Uint16 ProgramUsingAutoECC(Uint16 sectorNum, Uint16 *Buffer, Uint32 startIndex, Uint16 writeSize) {
     uint32 *Buffer32 = (uint32 *)Buffer;
 
     Uint16 res = 0;
 
     uint32 u32Index = 0, i = 0;
-    Fapi_StatusType             oReturnCheck;
     Fapi_FlashStatusType        oFlashStatus;
     Fapi_FlashStatusWordType    oFlashStatusWord;
 
@@ -153,8 +153,31 @@ Uint16 ProgramUsingAutoECC(Uint16 sectorNum, Uint16 *Buffer, Uint32 startIndex, 
         //  Verify the programmed values.  Check for any ECC errors.
         oReturnCheck = Fapi_doVerify((uint32 *)u32Index, 4, Buffer32+(i/2), &oFlashStatusWord);
         if(oReturnCheck != Fapi_Status_Success) {
-            res = 3;
-            //return res;
+            Uint32 ioReturnCheck = oReturnCheck;
+            switch(ioReturnCheck)
+            {
+            case Fapi_Status_FsmBusy:
+            case Fapi_Status_FsmReady:
+            case Fapi_Status_AsyncBusy:
+            case Fapi_Status_AsyncComplete:
+            case Fapi_Error_Fail:
+            case Fapi_Error_StateMachineTimeout:
+            case Fapi_Error_OtpChecksumMismatch:
+            case Fapi_Error_InvalidDelayValue:
+            case Fapi_Error_InvalidHclkValue:
+            case Fapi_Error_InvalidCpu:
+            case Fapi_Error_InvalidBank:
+            case Fapi_Error_InvalidAddress:
+            case Fapi_Error_InvalidReadMode:
+            case Fapi_Error_AsyncIncorrectDataBufferLength:
+            case Fapi_Error_AsyncIncorrectEccBufferLength:
+            case Fapi_Error_AsyncDataEccBufferLengthMismatch:
+            case Fapi_Error_FeatureNotAvailable:
+            case Fapi_Error_FlashRegsNotWritable:
+            case Fapi_Error_InvalidCPUID:
+                UARTprintf("Fapi_doVerify:%l\n",oReturnCheck);
+                break;
+            }
         }
     }
 

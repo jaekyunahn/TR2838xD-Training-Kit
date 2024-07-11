@@ -11,6 +11,8 @@
 void init_spi(void);
 void bsp_spi_gpio(void);
 
+void init_spia(void);
+Uint16 SpiaDriver(Uint16 Data);
 void init_spib(void);
 Uint16 SpibDriver(Uint16 Data);
 

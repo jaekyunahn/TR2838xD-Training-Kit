@@ -24,6 +24,7 @@ void init_board(void) {
     //  CPU2 Boot
 #ifdef _FLASH
     //  Flash Boot
+    //  CPU2에 프로그램이 없으면 헛돌음.
     Device_bootCPU2(BOOTMODE_BOOT_TO_FLASH_SECTOR0);
 #endif
     //  Step 2. Initialize GPIO:
@@ -55,8 +56,11 @@ void init_board(void) {
     //  Initialize peripheral interface
 #ifdef CPU1
     init_gpio();
+    init_can();
     init_sci();
     init_spi();
+    init_adc();
+    init_epwm();
 #endif
     //  Enable global Interrupts and higher priority real-time debug events:
     EINT;  // Enable Global interrupt INTM

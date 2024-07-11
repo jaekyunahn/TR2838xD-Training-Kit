@@ -22,7 +22,8 @@ void main_loop(void) {
 
 #pragma CODE_SECTION(topProcess, ".TI.ramfunc");
 Uint16 topProcess(void) {
-
+    //  Not use
+    return 0;
 }
 
 //

@@ -20,9 +20,9 @@ char id[32];
 char pw[32];
 #pragma DATA_SECTION(pw, "ramgs0");
 
-#define CMD_COUNT 9
+#define CMD_COUNT 10
 const char cmd_table[CMD_COUNT][LIMIT_CMD_LEN] = {
-    "help", "test", "reboot", "ls", "cd", "rm", "mkdir", "coretest", "ai"
+    "help", "test", "reboot", "ls", "cd", "rm", "mkdir", "coretest", "ai", "temp"
 };
 
 /**

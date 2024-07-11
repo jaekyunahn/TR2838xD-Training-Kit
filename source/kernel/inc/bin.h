@@ -20,5 +20,6 @@ void Cmd_ls(void);
 void Cmd_cd(void);
 void Cmd_rm(void);
 void Cmd_mkdir(void);
+void Cmd_temp(void);
 
 #endif /* KERNEL_INC_BIN_H_ */

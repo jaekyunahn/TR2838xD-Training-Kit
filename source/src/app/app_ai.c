@@ -17,9 +17,9 @@
 //  각 레이터 당 퍼셉트론 개수
 #define INPUT_LAYER             784
 #define HIDDEN0_LAYER           256
-#define HIDDEN1_LAYER           128
-#define HIDDEN2_LAYER           64
-#define HIDDEN3_LAYER           32
+#define HIDDEN1_LAYER           256
+#define HIDDEN2_LAYER           256
+#define HIDDEN3_LAYER           64
 #define OUTPUT_LAYER            10
 
 //  레이어의 종류
@@ -197,7 +197,7 @@ void dence_layer( Uint16 layer_case, Uint16 layer_index, Uint16 input_layer_coun
     //Uint16 temp[4];
     Uint16 x = 0, y = 0;
 
-#if 0
+#if 1
     memset(read_file_address, 0x00, sizeof(read_file_address));
     if(layer_case == HEDDEN_LAYER_TYPE)
         sprintf(read_file_address,"/home/data/h%d_b",layer_index);  //layer_case + layer_index
@@ -218,7 +218,7 @@ void dence_layer( Uint16 layer_case, Uint16 layer_index, Uint16 input_layer_coun
         temp_out_layer[x] = temp_bias[x];
 
         //  가중치 읽어오기
-#if 0
+#if 1
         memset(read_file_address, 0x00, sizeof(read_file_address));
         if(layer_case == HEDDEN_LAYER_TYPE){
             sprintf(read_file_address,"/home/data/h%d_w%d",layer_index,x);
@@ -297,12 +297,14 @@ void dence_layer( Uint16 layer_case, Uint16 layer_index, Uint16 input_layer_coun
     }
 }
 
+//  send CLA processing start
 void CLA_start(void) {
     //  CPU1.CLA start
     asm("  IACK  #0x0001");
     asm("  RPT #3 || NOP");
 }
 
+//  check CLA end Flag
 void CLA_end(void) {
     //  CPU1.CLA end
     if (Cla1Regs.MIRUN.bit.INT1 != 1) {
@@ -311,7 +313,7 @@ void CLA_end(void) {
 }
 
 //
-//  SD-card에서 읽은 데이터를 float32 형태로 일괄 변경하는 함수
+//  SD-card에서 읽은 데이터를 float32 형태로 변경하는 함수
 //
 void convertBuffer_charTofloat(Uint16 *source, float32 *output, Uint16 count) {
     Uint16 x = 0;
@@ -325,10 +327,12 @@ void convertBuffer_charTofloat(Uint16 *source, float32 *output, Uint16 count) {
     }
 }
 
+//  Send CPU2 Processing Start
 void CPU2_start(void) {
     cpu1_to_cpu2.flag = 1;
 }
 
+//  check CPU2 End Flag
 void CPU2_end(void) {
     if(cpu2_to_cpu1.flag == 1) {
         cpu2_end = 1;

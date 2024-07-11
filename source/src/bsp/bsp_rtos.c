@@ -176,6 +176,7 @@ void BlinkLED_task(void *pvParameters) {
 
     while(1) {
         bsp_led_blink();
+        coolingSystem();
         BlinkLED_task_counter++;
         vTaskDelayUntil(&xLastWakeTime, xFrequency);
     }

@@ -66,6 +66,7 @@ void bin(void) {
             case 6: Cmd_mkdir(); break;
             case 7: app_core_test(); break;
             case 8: app_ai(); break;
+            case 9: Cmd_temp(); break;
             default:
                 UARTprintf("fail commands\n");
                 break;
@@ -290,3 +291,15 @@ void Cmd_mkdir(void) {
     set_run_flag(0);
     return;
 }
+
+void Cmd_temp(void) {
+    int16 tmp = getTemp();
+    UARTprintf("CPU temperature = %d\n",tmp);
+    // Return success.
+    set_run_flag(0);
+    return;
+}
+
+//
+//  End file
+//

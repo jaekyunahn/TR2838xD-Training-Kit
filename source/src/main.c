@@ -13,6 +13,7 @@
  * If compiled with CPU1, it also initializes the FreeRTOS kernel.
  */
 uint32_t main(void) {
+    uint32_t jumpToAddress = 0x00000000;
     //  Initialize Board
     init_board();
     //  Initialize Application or Variable
@@ -24,11 +25,12 @@ uint32_t main(void) {
     #else
     //  Bootloader Timer
     init_cpuTimer0();
-    uint32_t jumpToAddress = 0x00000000;
     jumpToAddress = app_FWupdate();
+    //  Update Error
     if(jumpToAddress == 0) {
         __asm("    ESTOP0");
     }
+    UARTprintf("Jump to Application[0x%8x]\n",jumpToAddress);
     return jumpToAddress;
     #endif
 #endif
@@ -36,5 +38,5 @@ uint32_t main(void) {
     while(1) {
         main_loop();
     }
-    return 0;
+    return jumpToAddress;
 }

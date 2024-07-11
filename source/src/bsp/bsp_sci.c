@@ -97,17 +97,28 @@ void scia_write(Uint16 data) {
  *
  * @return The received data.
  */
+#pragma CODE_SECTION(scia_read, ".TI.ramfunc");
 Uint16 scia_read(void) {
     Uint16 res = 0;
     while (SciaRegs.SCIRXST.bit.RXRDY == 0); // wait for data
     res = SciaRegs.SCIRXBUF.all;
     return res;
 }
-
+#pragma CODE_SECTION(scia_read_nowait, ".TI.ramfunc");
 Uint16 scia_read_nowait(void) {
     Uint16 res = 0;
     if(SciaRegs.SCIRXST.bit.RXRDY == 1) {
         res = SciaRegs.SCIRXBUF.all;
+    }
+    return res;
+}
+#pragma CODE_SECTION(scia_read_struct, ".TI.ramfunc");
+struct UART_DATA scia_read_struct(void) {
+    struct UART_DATA res;
+    res.flag = 0;
+    if(SciaRegs.SCIRXST.bit.RXRDY == 1) {
+        res.flag = 1;
+        res.data = SciaRegs.SCIRXBUF.all;
     }
     return res;
 }

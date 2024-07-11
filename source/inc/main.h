@@ -52,11 +52,14 @@
 #include "ai_lib.h"
 
 //  User include
+#include "bsp_adc.h"
 #include "bsp_spi.h"
 #include "bsp_led.h"
 #include "bsp_cla.h"
+#include "bsp_can.h"
 #include "bsp_sci.h"
 #include "bsp_ipc.h"
+#include "bsp_epwm.h"
 #include "bsp_gpio.h"
 #include "bsp_rtos.h"
 #include "bsp_cpuTimer.h"
@@ -69,5 +72,13 @@
 #include "app_cpu2_thread.h"
 #include "app_multicoreTest.h"
 #include "app_FirmwareUpdate.h"
+#include "app_Xmodem.h"
+#include "app_coolingSystem.h"
+
+#define APPLICATION_ADDRESS         0x090000
+#define FLASH_SIZE                  0x2E000
+#define TEMP_READ_MEMORY_SIZE       256
+#define TEMP_WRITE_MEMORY_SIZE      128
+#define APPLICATION_START_SECTOR    5
 
 #endif /* USER_INC_MAIN_H_ */
