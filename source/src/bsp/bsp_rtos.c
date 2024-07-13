@@ -176,13 +176,13 @@ void BlinkLED_task(void *pvParameters) {
 
     while(1) {
         bsp_led_blink();
-        coolingSystem();
+        readTempSensor();
         BlinkLED_task_counter++;
         vTaskDelayUntil(&xLastWakeTime, xFrequency);
     }
 }
 
-// Specifies that Flash programs should be processed from RAM
+//  Specifies that Flash programs should be processed from RAM
 #ifdef _FLASH
 #pragma CODE_SECTION(main_task, ".TI.ramfunc");
 #pragma CODE_SECTION(BlinkLED_task, ".TI.ramfunc");

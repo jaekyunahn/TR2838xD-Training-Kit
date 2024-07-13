@@ -62,18 +62,18 @@
 #include "bsp_epwm.h"
 #include "bsp_gpio.h"
 #include "bsp_rtos.h"
+#include "bsp_flash.h"
+#include "bsp_cpuTemp.h"
 #include "bsp_cpuTimer.h"
 #include "bsp_filesystem.h"
-#include "bsp_flash.h"
 
 #include "app_ai.h"
+#include "app_Xmodem.h"
 #include "app_function.h"
 #include "app_LED_Driver.h"
 #include "app_cpu2_thread.h"
 #include "app_multicoreTest.h"
 #include "app_FirmwareUpdate.h"
-#include "app_Xmodem.h"
-#include "app_coolingSystem.h"
 
 #define APPLICATION_ADDRESS         0x090000
 #define FLASH_SIZE                  0x2E000

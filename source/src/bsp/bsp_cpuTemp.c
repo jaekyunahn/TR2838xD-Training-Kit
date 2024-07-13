@@ -1,8 +1,8 @@
 /*
- * app_coolingSystem.c
+ * bsp_cpuTemp.c
  *
- *  Created on: 2024. 7. 10.
- *      Author: User
+ *  Created on: 2024. 7. 13.
+ *      Author: ajg10
  */
 #include "main.h"
 
@@ -12,12 +12,10 @@
 uint16_t sensorSample;  // ADC val
 int16_t sensorTemp;     // int type Temp data ('C)
 
-void coolingSystem(void) {
-
+void readTempSensor(void) {
     //
     //  Read temperature (ADC)
     //
-
     //  Convert, wait for completion, and store results
     ADC_forceMultipleSOC(ADCA_BASE, ADC_FORCE_SOC0);
     //  Wait for ADCA to complete, then acknowledge flag
@@ -27,14 +25,10 @@ void coolingSystem(void) {
     sensorSample = ADC_readResult(ADCARESULT_BASE, ADC_SOC_NUMBER0);
     //  Convert the result to a temperature in degrees C
     sensorTemp = ADC_getTemperatureC(sensorSample, 3.3f);
-
-    //
-    //  Cooling FAN Throttle (ePWM)
-    //
-
-    //  TBD
 }
 
 int16 getTemp(void) {
     return sensorTemp;
 }
+
+
