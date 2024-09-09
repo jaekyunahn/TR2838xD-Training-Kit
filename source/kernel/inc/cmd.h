@@ -30,5 +30,7 @@ void set_dir_address(char *address);
 void get_now_dir(char *data);
 void autoLogin(void);
 int cmd_size(char *cmd);
+Uint16 get_cmd_count(void);
+void get_cmd_table(Uint16 index, char data[LIMIT_CMD_LEN]);
 
 #endif /* KERNEL_INC_CMD_H_ */

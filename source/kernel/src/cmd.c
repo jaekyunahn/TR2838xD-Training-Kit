@@ -20,10 +20,18 @@ char id[32];
 char pw[32];
 #pragma DATA_SECTION(pw, "ramgs0");
 
-#define CMD_COUNT 10
+#define CMD_COUNT 11
 const char cmd_table[CMD_COUNT][LIMIT_CMD_LEN] = {
-    "help", "test", "reboot", "ls", "cd", "rm", "mkdir", "coretest", "ai", "temp"
+    "help", "test", "reboot", "ls", "cd", "rm", "mkdir", "coretest", "ai", "temp", "adc_pwm"
 };
+
+Uint16 get_cmd_count(void){
+    return CMD_COUNT;
+}
+
+void get_cmd_table(Uint16 index, char data[LIMIT_CMD_LEN]){
+    memcpy(data,cmd_table[index],sizeof(char)*LIMIT_CMD_LEN);
+}
 
 /**
  * @brief Initialize command buffers.

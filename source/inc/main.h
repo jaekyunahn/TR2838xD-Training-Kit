@@ -74,11 +74,34 @@
 #include "app_cpu2_thread.h"
 #include "app_multicoreTest.h"
 #include "app_FirmwareUpdate.h"
+#include "app_PWM_ADC_test.h"
 
 #define APPLICATION_ADDRESS         0x090000
 #define FLASH_SIZE                  0x2E000
 #define TEMP_READ_MEMORY_SIZE       256
 #define TEMP_WRITE_MEMORY_SIZE      128
 #define APPLICATION_START_SECTOR    5
+//  PWM
+#define period  2000 // 50kHz
+//
+#define PI                  ((float)3.141592)
+#define TWOPI               ((float)6.283185)
+#define SQRT2               ((float)1.414213)
+#define SQRT3               ((float)1.732050)
+#define INV_SQRT3           ((float)0.577350)
+#define INV_2PI             ((float)0.159154)
+
+typedef enum {
+    CPUTEMP = 0,
+    POMETER,
+    VOLTFOLLOW,
+    VOLTFOLLOW_LPF,
+    VOLTFOLLOW_LPF2
+} ADC_DATA_TYPE;
+
+struct UART_DATA{
+    Uint16 flag;
+    Uint16 data;
+};
 
 #endif /* USER_INC_MAIN_H_ */

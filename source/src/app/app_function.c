@@ -56,6 +56,80 @@ Uint16 calcrc(Uint16 *data, Uint32 count){
     return crc;
 }
 
+#if 0
+float32 PIcontroller(float32 in, float32 ref, struct PI_CTRL *PIcon, struct PI_GAIN gain){
+    PIcon->err = ref - in;
+    PIcon->prop = gain.Kp * PIcon->err;
+    PIcon->integ = PIcon->integ + gain.KiT * (PIcon->err - gain.Ka*PIcon->out_err);
+    PIcon->out = PIcon->prop + PIcon->integ;
+
+    if(PIcon->out > gain.out_max) PIcon->out_sat = gain.out_max;
+    else if (PIcon->out < 0.) PIcon->out_sat = 0.;
+    else PIcon->out_sat = PIcon->out;
+
+    PIcon->out_err = PIcon->out - PIcon->out_sat;
+
+    return PIcon->out_sat;
+}
+#endif
+
+void IIR1CoeffInit(IIR1 *p_gIIR, float w0 )
+{
+    float a0, b0, b1;
+    float INV_alpha, dt;
+    int type;
+
+    // Continuous-time Filter Coefficients
+    p_gIIR->w0 = w0 ;
+    type = p_gIIR->type;
+    dt = p_gIIR->delT;
+
+    a0 = w0;
+    switch(type)
+    {
+        case K_LPF:
+            b0 = w0;
+            b1 = 0;
+            break;
+        case K_HPF:
+            b0 = 0;
+            b1 = (float)1;
+            break;
+        default:
+        case K_ALLPASS:
+            b0 = -w0;
+            b1 = (float)1;
+    }
+
+    // Discrete-time Filter Coefficients
+    INV_alpha = (float)1./((float)2 + dt*a0);
+    p_gIIR->coeff[0] = ((float)2*b1 + dt*b0)*INV_alpha;
+    p_gIIR->coeff[1] = (-(float)2*b1 + dt*b0)*INV_alpha;
+    p_gIIR->coeff[2] = -(-(float)2 + dt*a0)*INV_alpha;
+
+    return;
+}
+
+void IIR1Init(IIR1 *p_gIIR, float w0 )
+{
+    // Initialize Filter Coefficients
+    IIR1CoeffInit(p_gIIR, w0);
+
+    // Initialize Storage Elements
+    p_gIIR->reg = 0;
+
+    return;
+}
+
+float IIR1Update(IIR1 *p_gIIR, const float x)
+{
+    float y;
+
+    y = p_gIIR->reg + p_gIIR->coeff[0]*x;
+    p_gIIR->reg = p_gIIR->coeff[1]*x + p_gIIR->coeff[2]*y;
+
+    return(y);
+}
 //
 //
 //

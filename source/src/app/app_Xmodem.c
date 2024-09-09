@@ -28,7 +28,7 @@ Uint16 EraseErrorCount = 0;
 Uint16 debugtimeoutCounter = 0;
 Uint16 debugLastdata = 0;
 
-struct UART_DATA uart_recive_Data;
+struct UART_DATA xmodem_recive_Data;
 
 Uint16 flowStatus = 0;
 void Xmodem_thread(void) {
@@ -46,7 +46,7 @@ void Xmodem_thread(void) {
     //
 
     //  init
-    uart_recive_Data.flag = 0;
+    xmodem_recive_Data.flag = 0;
     memset(receiveBuffer,0x00,sizeof(receiveBuffer));
     receiveBufferIndex=0;
 
@@ -74,10 +74,10 @@ void Xmodem_thread(void) {
         //  check Time Out Counter
         iTimeOutCounter = getUpdateTimerCount();
         //  check revData
-        uart_recive_Data = scia_read_struct();
-        if(uart_recive_Data.flag == 1){
-            receiveBuffer[receiveBufferIndex] = uart_recive_Data.data;
-            debugLastdata = uart_recive_Data.data;
+        xmodem_recive_Data = scia_read_struct();
+        if(xmodem_recive_Data.flag == 1){
+            receiveBuffer[receiveBufferIndex] = xmodem_recive_Data.data;
+            debugLastdata = xmodem_recive_Data.data;
             setUpdateTimerCount(0);//iTimeOutCounter = getUpdateTimerCount();
             receiveBufferIndex++;
         }
@@ -179,11 +179,11 @@ void Xmodem_thread(void) {
                 setUpdateTimerCount(0);
             }
             //  예외처리 >> 규정상 EOT, ETB문자가 순서대로 와야 하는데 순서가 뒤집히는 경우도 있어서 이때 ACK 처리해줘야 상대도 통신을 마칠 수 있음
-            if((uart_recive_Data.data == EOT)||(uart_recive_Data.data == ETB)) {
+            if((xmodem_recive_Data.data == EOT)||(xmodem_recive_Data.data == ETB)) {
                 scia_write(ACK);
             }
             //  Enter Key Press
-            if(uart_recive_Data.data == 13) {
+            if(xmodem_recive_Data.data == 13) {
                 thread_loop_flag = 0;
             }
             break;

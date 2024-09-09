@@ -26,6 +26,7 @@ void init_board(void) {
     //  Flash Boot
     //  CPU2에 프로그램이 없으면 헛돌음.
     Device_bootCPU2(BOOTMODE_BOOT_TO_FLASH_SECTOR0);
+    //Device_bootCM(BOOTMODE_BOOT_TO_FLASH_SECTOR0);
 #endif
     //  Step 2. Initialize GPIO:
     //  This example function is found in the F2837xD_Gpio.c file and

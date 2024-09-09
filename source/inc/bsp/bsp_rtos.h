@@ -17,5 +17,6 @@ void main_task(void * pvParameters);
 void cla_task(void * pvParameters);
 void cmd_task(void * pvParameters);
 void BlinkLED_task(void * pvParameters);
+void ADC_task(void *pvParameters) ;
 
 #endif /* INC_BSP_BSP_RTOS_H_ */

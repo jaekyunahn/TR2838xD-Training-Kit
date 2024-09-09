@@ -116,7 +116,7 @@ void app_ai(void) {
     UARTprintf("layer_count=%d\n",(Uint16)layer_count);
 
     //
-    for(load_exmaple_index = 0;load_exmaple_index < 1 ;load_exmaple_index++) {
+    for(load_exmaple_index = 0;load_exmaple_index < 20 ;load_exmaple_index++) {
         //  <-- Timer0 initiation
         timer_count = 0;
         timer_flag = 1;
@@ -227,10 +227,13 @@ void dence_layer( Uint16 layer_case, Uint16 layer_index, Uint16 input_layer_coun
             sprintf(read_file_address,"/home/data/out_w%d",x);
         }
         res = read_file(read_file_address, read_data_sdcard_buffer, sizeof(read_data_sdcard_buffer), 0);
+        if(res == -1){
+            UARTprintf("Read Fail Weight\n");
+        }
 #endif
         //
         convertBuffer_charTofloat(read_data_sdcard_buffer, temp_weight, input_layer_count);
-#if 1
+#if 0
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------
         //  data ºÐ»ê   Distributed_processing_size
         //  CPU1.CLA (input + weight)

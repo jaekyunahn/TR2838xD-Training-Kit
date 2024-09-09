@@ -12,6 +12,9 @@
 #define CMD_STACK_SIZE  2048U
 // Led Thread Stack Size
 #define LED_STACK_SIZE  256U
+// Led Thread Stack Size
+#define ADC_STACK_SIZE  256U
+
 #define NULL_PARAM      0x00000000
 
 #define AUTO_LOGIN  1
@@ -24,6 +27,8 @@ static StaticTask_t cmd_taskBuffer;
 static StackType_t  cmd_taskStack[CMD_STACK_SIZE];
 static StaticTask_t blinkLED_taskBuffer;
 static StackType_t  blinkLED_taskStack[LED_STACK_SIZE];
+static StaticTask_t ADC_taskBuffer;
+static StackType_t  ADC_taskStack[ADC_STACK_SIZE];
 
 TaskHandle_t main_taskHandle;
 
@@ -110,6 +115,16 @@ void init_thread(void) {
         &blinkLED_taskBuffer        // Variable to hold the task's data structure
     );
 
+    xTaskCreateStatic(
+        ADC_task,              // Function that implements the task
+        "ADC_task",            // Task name
+        ADC_STACK_SIZE,             // Stack size
+        (void *)NULL_PARAM,         // Parameter passed into the task
+        tskIDLE_PRIORITY + 2,       // Task priority
+        ADC_taskStack,         // Array to use as the task's stack
+        &ADC_taskBuffer        // Variable to hold the task's data structure
+    );
+
     // Start scheduler
     vTaskStartScheduler();
 }
@@ -178,6 +193,16 @@ void BlinkLED_task(void *pvParameters) {
         bsp_led_blink();
         readTempSensor();
         BlinkLED_task_counter++;
+        vTaskDelayUntil(&xLastWakeTime, xFrequency);
+    }
+}
+
+void ADC_task(void *pvParameters) {
+    TickType_t xLastWakeTime;
+    const TickType_t xFrequency = 1;
+
+    while(1) {
+        readADC();
         vTaskDelayUntil(&xLastWakeTime, xFrequency);
     }
 }

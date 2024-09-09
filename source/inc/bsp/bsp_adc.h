@@ -10,6 +10,9 @@
 
 void init_adc(void);
 void init_adca(void);
-
+void init_adcc(void);
+void init_adcd(void);
+void readADC(void);
+Uint16 getADCval(Uint16 caseNum);
 
 #endif /* INC_BSP_BSP_ADC_H_ */

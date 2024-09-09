@@ -6,10 +6,10 @@
  */
 #include "main.h"
 
-#define period  2000 // 50kHz
 void init_epwm(void)
 {
     CpuSysRegs.PCLKCR2.bit.EPWM1=1;
+    CpuSysRegs.PCLKCR2.bit.EPWM7=1;
 
     EALLOW;
     CpuSysRegs.PCLKCR0.bit.TBCLKSYNC = 0;
@@ -34,20 +34,30 @@ void init_epwm(void)
 
 void setup_epwm(void)
 {
+#ifdef CPU1
     EALLOW;
 
     //  Disable internal pull-up for the selected output pins for reduced power consumption. Pull-ups can be enabled or disabled by the user.
     //  Comment out other unwanted lines.
     GpioCtrlRegs.GPAPUD.bit.GPIO0 = 1;   // Disable pull-up on GPIO0 (EPWM1A)
     GpioCtrlRegs.GPAPUD.bit.GPIO1 = 1;   // Disable pull-up on GPIO1 (EPWM1B)
-
     //  Configure EPWM-1 pins using GPIO regs. This specifies which of the possible GPIO pins will be EPWM1 functional pins.
     //  Comment out other unwanted lines.
     GpioCtrlRegs.GPAMUX1.bit.GPIO0 = 1;   // Configure GPIO0 as EPWM1A
     GpioCtrlRegs.GPAMUX1.bit.GPIO1 = 1;   // Configure GPIO1 as EPWM1B
 
+    //  Disable internal pull-up for the selected output pins for reduced power consumption. Pull-ups can be enabled or disabled by the user.
+    //  Comment out other unwanted lines.
+    GpioCtrlRegs.GPAPUD.bit.GPIO12 = 1;   // Disable pull-up on GPIO0 (EPWM1A)
+    GpioCtrlRegs.GPAPUD.bit.GPIO13 = 1;   // Disable pull-up on GPIO1 (EPWM1B)
+    //  Configure EPWM-1 pins using GPIO regs. This specifies which of the possible GPIO pins will be EPWM1 functional pins.
+    //  Comment out other unwanted lines.
+    GpioCtrlRegs.GPAMUX1.bit.GPIO12 = 1;   // Configure GPIO0 as EPWM1A
+    GpioCtrlRegs.GPAMUX1.bit.GPIO13 = 1;   // Configure GPIO1 as EPWM1B
+
     EDIS;
 
+#endif
     //  Setup TBCLK
     EPwm1Regs.TBPRD = period;       // Set timer period 801 TBCLKs
     EPwm1Regs.TBPHS.bit.TBPHS = 0x0000;        // Phase is 0
@@ -78,6 +88,30 @@ void setup_epwm(void)
     EPwm1Regs.ETPS.bit.INTPRD = 1;           // Generate INT on 3rd event
 #endif
 
+    //  Setup TBCLK
+    EPwm7Regs.TBPRD = period;       // Set timer period 801 TBCLKs
+    EPwm7Regs.TBPHS.bit.TBPHS = 0x0000;        // Phase is 0
+    EPwm7Regs.TBCTR = 0x0000;                  // Clear counter
+
+    //  Setup counter mode
+    EPwm7Regs.TBCTL.bit.CTRMODE = TB_COUNT_UPDOWN; // Count up and down
+    EPwm7Regs.TBCTL.bit.PHSEN = TB_DISABLE;        // Disable phase loading
+    EPwm7Regs.TBCTL.bit.HSPCLKDIV = TB_DIV1;       // Clock ratio to SYSCLKOUT
+    EPwm7Regs.TBCTL.bit.CLKDIV = TB_DIV1;
+
+    //  Setup shadowing
+    EPwm7Regs.CMPCTL.bit.SHDWAMODE = CC_SHADOW;
+    EPwm7Regs.CMPCTL.bit.SHDWBMODE = CC_SHADOW;
+    EPwm7Regs.CMPCTL.bit.LOADAMODE = CC_CTR_ZERO; // Load on Zero
+    EPwm7Regs.CMPCTL.bit.LOADBMODE = CC_CTR_ZERO;
+
+    //  Set actions
+    EPwm7Regs.AQCTLA.bit.CAU = AQ_SET;            // Set PWM1A on event A, up count
+    EPwm7Regs.AQCTLA.bit.CAD = AQ_CLEAR;          // Clear PWM1A on event A, down count
+    EPwm7Regs.AQCTLB.bit.CBU = AQ_SET;            // Set PWM1B on event B, up count
+    EPwm7Regs.AQCTLB.bit.CBD = AQ_CLEAR;          // Clear PWM1B on event B, down count
+
     //  Duty 50% Start
-    EPwm1Regs.CMPA.bit.CMPA = period / 2;
+    EPwm1Regs.CMPA.bit.CMPA = period - 1;
+    EPwm7Regs.CMPA.bit.CMPA = 0;
 }

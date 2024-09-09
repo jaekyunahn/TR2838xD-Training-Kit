@@ -8,11 +8,6 @@
 #ifndef INC_BSP_BSP_SCI_H_
 #define INC_BSP_BSP_SCI_H_
 
-struct UART_DATA{
-    Uint16 flag;
-    Uint16 data;
-};
-
 void init_sci(void);
 void init_scia(void);
 void bsp_sci_gpio(void);

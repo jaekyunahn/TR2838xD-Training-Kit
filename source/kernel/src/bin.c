@@ -67,6 +67,7 @@ void bin(void) {
             case 7: app_core_test(); break;
             case 8: app_ai(); break;
             case 9: Cmd_temp(); break;
+            case 10: app_pwm_adc(); break;
             default:
                 UARTprintf("fail commands\n");
                 break;
@@ -100,9 +101,16 @@ void update_val(int index, int argc, char argv[CMDLINE_MAX_ARGS][LIMIT_CMD_LEN])
  * This function prints the list of available commands.
  */
 void Cmd_help(void) {
+    Uint16 i = 0;
+    char tmp[LIMIT_CMD_LEN];
     // Print some header text.
     UARTprintf("----------------------------------------\n");
-    UARTprintf("help        - commands list\n");
+    UARTprintf("help - commands list\n");
+    for(i = 0 ; i < get_cmd_count() ; i++) {
+        memset(tmp,0x00,sizeof(tmp));
+        get_cmd_table(i,tmp);
+        UARTprintf("%32s\n",tmp);
+    }
     UARTprintf("----------------------------------------\n");
 
     // Return success.
